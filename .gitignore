@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# UV
+.uv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Data (keep raw trace out of git)
+data/raw/*.csv
+data/raw/*.parquet
+data/raw/*.tar.gz
+data/raw/*.gz
+data/processed/*.parquet
+data/processed/*.csv
+
+# Model artifacts
+artifacts/forecasting/models/*.json
+artifacts/forecasting/models/*.ubj
+artifacts/rl/checkpoints/*.zip
+artifacts/experiments/results/*.json
+artifacts/experiments/results/*.csv
+
+# MongoDB
+mongo_data/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Misc
+*.log
+*.tmp
+

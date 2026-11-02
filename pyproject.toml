@@ -1,0 +1,91 @@
+[project]
+name = "gridshift"
+version = "0.1.0"
+description = "Adaptive GPU Cluster Scheduler — A trace-driven research prototype for intelligent GPU job scheduling"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Vipul Sharma"},
+]
+
+dependencies = [
+    # API
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "python-multipart>=0.0.12",
+
+    # Database
+    "motor>=3.6.0",
+    "pymongo>=4.10.0",
+
+    # Data Processing
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "pyarrow>=18.0.0",
+
+    # ML / Forecasting
+    "xgboost>=2.1.0",
+    "scikit-learn>=1.5.0",
+
+    # RL
+    "gymnasium>=1.0.0",
+    "stable-baselines3>=2.4.0",
+    "sb3-contrib>=2.4.0",
+    "torch>=2.4.0",
+
+    # Utilities
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "python-dotenv>=1.0.0",
+    "matplotlib>=3.9.0",
+    "rich>=13.9.0",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "httpx>=0.28.0",
+    "ruff>=0.8.0",
+    "pre-commit>=4.0.0",
+    "jupyter>=1.1.0",
+    "ipykernel>=6.29.0",
+]
+
+[project.scripts]
+gridshift-api = "gridshift.api.main:run_server"
+gridshift-ingest = "scripts.ingest:main"
+gridshift-simulate = "scripts.simulate:main"
+gridshift-train-forecast = "scripts.train_forecast:main"
+gridshift-train-ppo = "scripts.train_ppo:main"
+gridshift-evaluate = "scripts.evaluate:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gridshift", "src/scripts"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM", "TCH"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gridshift"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+
