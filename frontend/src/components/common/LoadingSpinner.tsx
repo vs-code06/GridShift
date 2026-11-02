@@ -8,3 +8,4 @@ export default function LoadingSpinner({ message = 'Loading data...' }: { messag
     </div>
   );
 }
+

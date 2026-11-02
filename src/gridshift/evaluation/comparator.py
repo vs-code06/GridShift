@@ -98,3 +98,4 @@ def _format_result_dict(res: ExperimentResult) -> dict[str, Any]:
         "completed_jobs": m.completed_jobs,
         "total_jobs": m.total_jobs,
     }
+

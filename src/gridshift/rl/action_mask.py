@@ -55,3 +55,4 @@ def compute_action_mask(
     mask[candidate_k] = True
 
     return mask
+

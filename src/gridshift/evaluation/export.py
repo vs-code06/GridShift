@@ -29,3 +29,4 @@ def export_job_outcomes_parquet(
     path.parent.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame(job_outcomes)
     df.to_parquet(path, index=False)
+

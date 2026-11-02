@@ -101,3 +101,4 @@ def train_naive_baseline(
         # Scale immediate previous bin demand across the horizon window
         return (test_df[lag_column].values * horizon_steps).astype(float)
     return np.zeros(len(test_df), dtype=float)
+

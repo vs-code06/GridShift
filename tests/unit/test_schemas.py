@@ -71,3 +71,4 @@ def test_dataset_metadata_defaults() -> None:
     assert meta.valid_rows == 950
     assert meta.excluded_rows == 50
     assert meta.schema_version == "1.0"
+

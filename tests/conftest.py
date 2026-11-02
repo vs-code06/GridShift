@@ -123,3 +123,4 @@ def single_machine_cluster() -> Cluster:
             )
         ]
     )
+

@@ -68,3 +68,4 @@ class ForecastPredictor:
         vec = np.asarray(feature_vector, dtype=float).reshape(1, -1)
         pred = float(self._model.predict(vec)[0])
         return max(0.0, pred)
+

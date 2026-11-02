@@ -83,3 +83,4 @@ def calculate_step_reward(
         reward -= weights.idle_penalty_weight * idle_ratio
 
     return float(reward)
+

@@ -93,3 +93,4 @@ def test_capacity_never_negative_after_allocation(small_cluster: Cluster) -> Non
     assert node.free_cpu() == 0.0
     assert node.free_memory() == 0.0
     assert node.can_fit(1, 1.0, 1.0) is False
+

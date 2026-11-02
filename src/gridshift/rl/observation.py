@@ -106,3 +106,4 @@ def get_observation_dim(num_machines: int, candidate_k: int = 10) -> int:
     """Calculate the total length of the flattened observation vector."""
     # 4 (queue summary) + 4 * candidate_k + 4 * num_machines + 3 (running) + 2 (forecast)
     return 4 + (4 * candidate_k) + (4 * num_machines) + 3 + 2
+

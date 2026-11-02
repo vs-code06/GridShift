@@ -191,3 +191,4 @@ async def get_experiment_timeline(
     """Retrieve raw event timeline for simulation visualization."""
     events = storage.get_timeline(exp_id)
     return [TimelineEventModel(**e) for e in events]
+

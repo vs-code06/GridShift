@@ -35,3 +35,4 @@ async def test_experiments_empty_initially() -> None:
         response = await client.get("/experiments")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
+

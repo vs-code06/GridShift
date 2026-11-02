@@ -64,3 +64,4 @@ def test_backfill_skips_unfittable_and_schedules_fittable() -> None:
     assert len(decisions) == 1
     assert decisions[0].job.job_id == "fittable_behind"
     assert decisions[0].machine_id == "m0"
+

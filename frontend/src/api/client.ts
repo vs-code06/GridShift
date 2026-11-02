@@ -44,3 +44,4 @@ export const getForecastResults = (datasetId: string) =>
   api.get<ForecastResult>(`/forecasts/${datasetId}`);
 
 export default api;
+

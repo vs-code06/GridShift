@@ -103,3 +103,4 @@ $$R = \gamma \cdot N_{\text{completed}} - \alpha \cdot \frac{\sum_{j \in Q} \tex
 - **FastAPI** handles asynchronous REST operations.
 - **Hybrid Storage Manager** connects to MongoDB with connection pooling via Motor, with an automatic transparent local JSON/Parquet fallback.
 - Background simulation tasks run in dedicated worker pools, preventing event loop blocking during long training runs.
+

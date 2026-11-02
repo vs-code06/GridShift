@@ -113,3 +113,4 @@ def build_forecast_features(
 
     features_df = merged[valid_mask].reset_index(drop=True)
     return features_df
+

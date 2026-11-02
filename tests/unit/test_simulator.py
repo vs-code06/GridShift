@@ -78,3 +78,4 @@ def test_jobs_start_after_or_at_submit_time(
         assert outcome.start_time >= outcome.submit_time
         assert outcome.completion_time > outcome.start_time
         assert outcome.wait_time >= 0.0
+

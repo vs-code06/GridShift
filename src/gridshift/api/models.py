@@ -100,3 +100,4 @@ class TimelineEventModel(BaseModel):
     job_id: str | None = None
     machine_id: str | None = None
     details: dict[str, Any] = Field(default_factory=dict)
+

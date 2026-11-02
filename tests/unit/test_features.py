@@ -82,3 +82,4 @@ def test_wape_computation() -> None:
     # sum(|y_true|) = 60
     # wape = 7 / 60
     assert round(compute_wape(y_true, y_pred), 4) == round(7.0 / 60.0, 4)
+

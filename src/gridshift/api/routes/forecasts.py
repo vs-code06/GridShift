@@ -40,3 +40,4 @@ async def get_forecast_results(
         "actual": [],
         "predicted": [],
     }
+

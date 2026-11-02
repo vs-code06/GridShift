@@ -117,3 +117,4 @@ export interface TimelineEvent {
   machine_id?: string;
   details?: Record<string, unknown>;
 }
+

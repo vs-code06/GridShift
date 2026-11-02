@@ -156,3 +156,4 @@ storage = StorageManager()
 
 def get_storage() -> StorageManager:
     return storage
+

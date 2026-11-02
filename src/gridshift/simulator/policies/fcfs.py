@@ -36,3 +36,4 @@ class FCFSPolicy(SchedulingPolicy):
         if target_machine is not None:
             return [SchedulingDecision(job=head, machine_id=target_machine)]
         return []
+
