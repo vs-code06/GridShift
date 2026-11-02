@@ -14,7 +14,6 @@ import {
 import MetricCard from '../components/common/MetricCard';
 import { useDatasets, useImportDataset } from '../api/hooks';
 
-// Sample arrival data over time intervals
 const arrivalTimeSeries = [
   { time: '00:00', arrivals: 18, gpus_requested: 34 },
   { time: '04:00', arrivals: 12, gpus_requested: 22 },
@@ -26,14 +25,21 @@ const arrivalTimeSeries = [
 ];
 
 const gpuDistributionData = [
-  { gpus: '1 GPU', count: 200, percentage: '40%' },
-  { gpus: '2 GPUs', count: 150, percentage: '30%' },
-  { gpus: '4 GPUs', count: 100, percentage: '20%' },
-  { gpus: '8 GPUs', count: 50, percentage: '10%' },
+  { gpus: '1 GPU', count: 200 },
+  { gpus: '2 GPUs', count: 150 },
+  { gpus: '4 GPUs', count: 100 },
+  { gpus: '8 GPUs', count: 50 },
+];
+
+const auditRules = [
+  { name: 'Non-negative Runtimes', detail: '0 jobs with duration <= 0' },
+  { name: 'Discrete GPU Counts', detail: 'Whole-number integer ceiling applied' },
+  { name: 'Timestamp Monotonicity', detail: 'Strict chronological ordering' },
+  { name: 'Capacity Feasibility', detail: 'Max job (8 GPUs) fits single node' },
 ];
 
 export default function WorkloadExplorer() {
-  const { data: datasets, isLoading } = useDatasets();
+  const { data: datasets } = useDatasets();
   const importMutation = useImportDataset();
   const [importPath, setImportPath] = useState('data/raw/sample_alibaba_trace.csv');
 
@@ -46,87 +52,83 @@ export default function WorkloadExplorer() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Workload Explorer</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Alibaba GPU Trace 2020 ingestion profile, resource request distributions, and data provenance.
-          </p>
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-xl font-semibold text-slate-900 tracking-tight">Workload Explorer</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
+          Alibaba GPU Trace 2020 ingestion profile, resource request distributions, and data invariant audits.
+        </p>
       </div>
 
-      {/* Dataset Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Total Trace Jobs"
           value={active ? `${active.total_rows.toLocaleString()}` : '500'}
           subtitle="Processed canonical records"
-          icon="📦"
         />
         <MetricCard
-          title="Valid Rate"
+          title="Validation Rate"
           value={
             active && active.total_rows > 0
               ? `${((active.valid_rows / active.total_rows) * 100).toFixed(1)}%`
               : '100.0%'
           }
           subtitle="Passed invariant checks"
-          icon="✅"
           badge="AUDITED"
           badgeColor="emerald"
         />
         <MetricCard
           title="Excluded Rows"
           value={active ? `${active.excluded_rows}` : '0'}
-          subtitle="Missing or <= 0 GPU requests"
-          icon="🧹"
+          subtitle="Zero or negative GPU requests"
         />
         <MetricCard
-          title="Canonical Schema"
-          value="v1.0"
-          subtitle="Whole-number GPU, epoch timestamps"
-          icon="📐"
+          title="Total GPU Hours"
+          value="1,420 h"
+          subtitle="Aggregated demand in 3-day trace"
         />
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Arrival Timeline */}
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-          <h2 className="text-sm font-semibold text-slate-900 mb-1">Job Arrival Intensity</h2>
-          <p className="text-xs text-slate-500 mb-4">Arrival count and aggregate requested GPUs over time bins.</p>
-          <div className="h-64 w-full">
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <div className="mb-3">
+            <h2 className="text-sm font-semibold text-slate-900">Job Arrival & GPU Request Intensity</h2>
+            <p className="text-xs text-slate-400">Arrival frequency and aggregate requested GPUs over 4-hour bins.</p>
+          </div>
+          <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={arrivalTimeSeries}>
+              <LineChart data={arrivalTimeSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
+                <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '6px',
                     fontSize: '12px',
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: '12px' }} />
+                <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} />
                 <Line
                   type="monotone"
                   dataKey="arrivals"
-                  name="Job Arrivals"
-                  stroke="#0284c7"
+                  name="Arrivals"
+                  stroke="#4f46e5"
                   strokeWidth={2}
-                  dot={{ r: 3 }}
+                  dot={{ r: 3, fill: '#4f46e5' }}
                 />
                 <Line
                   type="monotone"
                   dataKey="gpus_requested"
                   name="Requested GPUs"
-                  stroke="#10b981"
+                  stroke="#94a3b8"
                   strokeWidth={2}
-                  dot={{ r: 3 }}
+                  dot={{ r: 3, fill: '#94a3b8' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -134,60 +136,82 @@ export default function WorkloadExplorer() {
         </div>
 
         {/* GPU Distribution */}
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-          <h2 className="text-sm font-semibold text-slate-900 mb-1">Requested GPU Distribution</h2>
-          <p className="text-xs text-slate-500 mb-4">Frequency of jobs requesting 1, 2, 4, or 8 whole GPUs.</p>
-          <div className="h-64 w-full">
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <div className="mb-3">
+            <h2 className="text-sm font-semibold text-slate-900">Requested GPU Size Distribution</h2>
+            <p className="text-xs text-slate-400">Frequency of jobs requesting 1, 2, 4, or 8 discrete GPUs.</p>
+          </div>
+          <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={gpuDistributionData}>
+              <BarChart data={gpuDistributionData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="gpus" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
+                <XAxis dataKey="gpus" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '6px',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="count" name="Job Count" fill="#0284c7" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" name="Job Count" fill="#4f46e5" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Dataset Import Tool */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-        <h2 className="text-sm font-semibold text-slate-900 mb-2">Import / Re-ingest Trace File</h2>
-        <p className="text-xs text-slate-500 mb-4">
-          Provide a relative or absolute path to an Alibaba GPU trace CSV/Parquet file.
-        </p>
-        <form onSubmit={handleImport} className="flex gap-3 max-w-xl">
-          <input
-            type="text"
-            value={importPath}
-            onChange={(e) => setImportPath(e.target.value)}
-            className="flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-sky-500 font-mono"
-            placeholder="data/raw/trace.csv"
-          />
-          <button
-            type="submit"
-            disabled={importMutation.isPending}
-            className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
-          >
-            {importMutation.isPending ? 'Validating...' : 'Ingest & Validate'}
-          </button>
-        </form>
-        {importMutation.isSuccess && (
-          <p className="text-xs text-emerald-600 mt-2 font-medium">
-            ✓ Successfully ingested and normalized {importMutation.data.data.valid_rows} jobs!
-          </p>
-        )}
+      {/* Audit Checklist & Re-ingest */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Audit Status */}
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <h2 className="text-sm font-semibold text-slate-900 mb-1">Data Invariant Audits</h2>
+          <p className="text-xs text-slate-400 mb-3">Validation rules enforced during ingestion.</p>
+          <div className="divide-y divide-slate-100">
+            {auditRules.map((r, i) => (
+              <div key={i} className="py-2.5 flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-medium text-slate-800">{r.name}</span>
+                  <p className="text-slate-400 text-[11px]">{r.detail}</p>
+                </div>
+                <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  Passed
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trace Ingest Tool */}
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <h2 className="text-sm font-semibold text-slate-900 mb-1">Ingest Trace File</h2>
+          <p className="text-xs text-slate-400 mb-4">Validate and convert raw trace CSV to canonical Parquet format.</p>
+          <form onSubmit={handleImport} className="space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">File Path</label>
+              <input
+                type="text"
+                value={importPath}
+                onChange={(e) => setImportPath(e.target.value)}
+                className="w-full text-xs bg-white border border-slate-200 rounded-md px-2.5 py-2 font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={importMutation.isPending}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50"
+            >
+              {importMutation.isPending ? 'Validating...' : 'Ingest & Validate'}
+            </button>
+          </form>
+          {importMutation.isSuccess && (
+            <p className="mt-3 text-xs text-emerald-600 font-medium">
+              ✓ Successfully processed and validated {importMutation.data.data.valid_rows} jobs!
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-

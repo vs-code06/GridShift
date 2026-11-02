@@ -4,12 +4,13 @@ import Sidebar from './Sidebar';
 
 export default function AppLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-y-auto max-w-7xl mx-auto w-full">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-6xl mx-auto px-8 py-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
 }
-

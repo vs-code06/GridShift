@@ -13,7 +13,6 @@ import {
 } from 'recharts';
 import MetricCard from '../components/common/MetricCard';
 
-// Sample predicted vs actual forward demand
 const forecastTimeSeries = [
   { step: '0h', actual: 42, predicted: 39, naive: 48 },
   { step: '2h', actual: 68, predicted: 64, naive: 42 },
@@ -29,166 +28,155 @@ const forecastTimeSeries = [
 ];
 
 const featureImportanceData = [
-  { feature: 'lag_gpu_1 (t-5m)', importance: 0.38 },
-  { feature: 'rolling_mean_gpu_6', importance: 0.22 },
-  { feature: 'hour_sin / cos', importance: 0.16 },
-  { feature: 'lag_gpu_2 (t-10m)', importance: 0.11 },
-  { feature: 'lag_jobs_1', importance: 0.08 },
-  { feature: 'day_sin / cos', importance: 0.05 },
+  { feature: 'lag_gpu_1 (t-5m)', importance: 38 },
+  { feature: 'rolling_mean_6', importance: 22 },
+  { feature: 'hour_sin/cos', importance: 16 },
+  { feature: 'lag_gpu_2 (t-10m)', importance: 11 },
+  { feature: 'lag_jobs_1', importance: 8 },
+  { feature: 'day_sin/cos', importance: 5 },
 ];
 
 export default function Forecast() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">GPU Workload Demand Forecasting</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          XGBoost regression forecasting aggregate GPU requests for the next 30-minute window without temporal leakage.
+        <h1 className="text-xl font-semibold text-slate-900 tracking-tight">Demand Forecasting</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
+          XGBoost regression predicting aggregate GPU requests for the next 30 minutes without lookahead leakage.
         </p>
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="XGBoost MAE"
-          value="5.19 GPUs"
-          subtitle="Held-out chronological test set"
-          icon="🎯"
-          badge="52% LOWER"
+          value="5.19"
+          subtitle="Test set error (52% lower vs. naive)"
+          badge="LOWEST"
           badgeColor="emerald"
         />
         <MetricCard
-          title="Naive Baseline MAE"
-          value="10.82 GPUs"
-          subtitle="Recent-window projection"
-          icon="📉"
+          title="Naive MAE"
+          value="10.82"
+          subtitle="Recent window projection baseline"
         />
         <MetricCard
           title="WAPE Score"
           value="59.2%"
-          subtitle="Weighted abs percentage error"
-          icon="📐"
+          subtitle="Weighted absolute percentage error"
         />
         <MetricCard
           title="Forecast Horizon"
           value="30 mins"
-          subtitle="5-min discretization intervals"
-          icon="⏳"
+          subtitle="5-minute interval discretization"
         />
       </div>
 
-      {/* Predicted vs Actual Chart */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-        <div className="flex items-center justify-between mb-2">
+      {/* Main Prediction Chart */}
+      <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Predicted vs. Actual GPU Demand</h2>
-            <p className="text-xs text-slate-500">
-              Evaluation on held-out chronological test data comparing XGBoost against ground-truth and naive baseline.
-            </p>
+            <h2 className="text-sm font-semibold text-slate-900">Predicted vs. Actual Demand</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Chronological test split evaluation comparing XGBoost against actual requests and naive baseline.</p>
           </div>
-          <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded">
+          <span className="text-xs font-mono text-slate-500 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded">
             Target: sum(gpus, t+30m)
           </span>
         </div>
 
-        <div className="h-72 w-full mt-4">
+        <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={forecastTimeSeries}>
+            <LineChart data={forecastTimeSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="step" stroke="#94a3b8" fontSize={11} />
-              <YAxis stroke="#94a3b8" fontSize={11} />
+              <XAxis dataKey="step" stroke="#94a3b8" fontSize={11} tickLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0f172a',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#fff',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
                   fontSize: '12px',
                 }}
               />
-              <Legend wrapperStyle={{ fontSize: '12px' }} />
+              <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} />
               <Line
                 type="monotone"
                 dataKey="actual"
-                name="Actual Future Demand"
+                name="Actual Demand"
                 stroke="#0f172a"
-                strokeWidth={2.5}
-                dot={{ r: 3 }}
+                strokeWidth={2}
+                dot={{ r: 3, fill: '#0f172a' }}
               />
               <Line
                 type="monotone"
                 dataKey="predicted"
                 name="XGBoost Prediction"
-                stroke="#0284c7"
+                stroke="#4f46e5"
                 strokeWidth={2}
-                strokeDasharray="4 2"
-                dot={{ r: 3 }}
+                strokeDasharray="4 3"
+                dot={{ r: 3, fill: '#4f46e5' }}
               />
               <Line
                 type="monotone"
                 dataKey="naive"
                 name="Naive Baseline"
-                stroke="#f59e0b"
+                stroke="#94a3b8"
                 strokeWidth={1.5}
-                dot={{ r: 2 }}
+                dot={{ r: 2, fill: '#94a3b8' }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Feature Importance & Methodology */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-          <h2 className="text-sm font-semibold text-slate-900 mb-1">Feature Importance (Gain)</h2>
-          <p className="text-xs text-slate-500 mb-4">Relative contribution of engineered features to prediction accuracy.</p>
-          <div className="h-56 w-full">
+      {/* Feature Importance & Invariants */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Feature Importance */}
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <h2 className="text-sm font-semibold text-slate-900 mb-1">Feature Importance (%)</h2>
+          <p className="text-xs text-slate-400 mb-4">Relative gain contributions to prediction accuracy.</p>
+          <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={featureImportanceData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis type="number" stroke="#94a3b8" fontSize={11} />
-                <YAxis dataKey="feature" type="category" stroke="#94a3b8" fontSize={11} width={130} />
+              <BarChart layout="vertical" data={featureImportanceData} margin={{ top: 0, right: 16, left: 16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} domain={[0, 45]} />
+                <YAxis dataKey="feature" type="category" stroke="#64748b" fontSize={11} tickLine={false} width={120} />
                 <Tooltip
+                  formatter={(val: number) => [`${val}%`, 'Importance']}
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '6px',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="importance" fill="#0284c7" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="importance" fill="#4f46e5" radius={[0, 3, 3, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-xs">
-          <h2 className="text-sm font-semibold text-slate-900 mb-2">No-Leakage Guarantee</h2>
-          <p className="text-xs text-slate-600 leading-relaxed mb-4">
-            In strict accordance with PRD Section 5.2 and Section 7.3:
-          </p>
-          <ul className="text-xs space-y-2 text-slate-600">
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>All features are computable at or before forecast timestamp <em>t</em>.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>Observed job runtimes and future arrivals are strictly excluded from inputs.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>Chronological 60/20/20 train/val/test partitioning prevents lookahead leakage.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-500 font-bold">✓</span>
-              <span>Forecast value is provided to PPO agent as context, with ablation testing.</span>
-            </li>
-          </ul>
+        {/* Validation & Leakage Guarantees */}
+        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
+          <h2 className="text-sm font-semibold text-slate-900 mb-1">Temporal Leakage Prevention</h2>
+          <p className="text-xs text-slate-400 mb-4">Rigorous isolation guarantees enforced across the pipeline.</p>
+          <div className="space-y-3 text-xs text-slate-600">
+            {[
+              'All features are computed strictly from information available at or before timestamp t.',
+              'Future arrivals and observed runtimes are strictly excluded from input observations.',
+              'Chronological 60/20/20 train/validation/test split ensures clean held-out evaluation.',
+              'Predictions are fed into the PPO scheduler as context, with ablation studies evaluated.',
+            ].map((text, i) => (
+              <div key={i} className="flex items-start gap-2.5">
+                <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                <p className="leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
