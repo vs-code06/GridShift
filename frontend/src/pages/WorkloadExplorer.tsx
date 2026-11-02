@@ -52,17 +52,17 @@ export default function WorkloadExplorer() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-slate-900 tracking-tight">Workload Explorer</h1>
-        <p className="text-sm text-slate-500 mt-0.5">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Workload Explorer</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Alibaba GPU Trace 2020 ingestion profile, resource request distributions, and data invariant audits.
         </p>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Summary KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard
           title="Total Trace Jobs"
           value={active ? `${active.total_rows.toLocaleString()}` : '500'}
@@ -92,14 +92,14 @@ export default function WorkloadExplorer() {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Arrival Timeline */}
-        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
-          <div className="mb-3">
-            <h2 className="text-sm font-semibold text-slate-900">Job Arrival & GPU Request Intensity</h2>
-            <p className="text-xs text-slate-400">Arrival frequency and aggregate requested GPUs over 4-hour bins.</p>
+        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+          <div className="pb-3 border-b border-slate-100">
+            <h2 className="text-base font-semibold text-slate-900">Arrival & GPU Request Intensity</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Arrival count and aggregate requested GPUs over 4-hour bins.</p>
           </div>
-          <div className="h-60 w-full">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={arrivalTimeSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -109,7 +109,7 @@ export default function WorkloadExplorer() {
                   contentStyle={{
                     backgroundColor: '#ffffff',
                     border: '1px solid #e2e8f0',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     fontSize: '12px',
                   }}
                 />
@@ -118,17 +118,17 @@ export default function WorkloadExplorer() {
                   type="monotone"
                   dataKey="arrivals"
                   name="Arrivals"
-                  stroke="#4f46e5"
+                  stroke="#0f172a"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: '#4f46e5' }}
+                  dot={{ r: 3, fill: '#0f172a' }}
                 />
                 <Line
                   type="monotone"
                   dataKey="gpus_requested"
                   name="Requested GPUs"
-                  stroke="#94a3b8"
+                  stroke="#64748b"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: '#94a3b8' }}
+                  dot={{ r: 3, fill: '#64748b' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -136,12 +136,12 @@ export default function WorkloadExplorer() {
         </div>
 
         {/* GPU Distribution */}
-        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
-          <div className="mb-3">
-            <h2 className="text-sm font-semibold text-slate-900">Requested GPU Size Distribution</h2>
-            <p className="text-xs text-slate-400">Frequency of jobs requesting 1, 2, 4, or 8 discrete GPUs.</p>
+        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+          <div className="pb-3 border-b border-slate-100">
+            <h2 className="text-base font-semibold text-slate-900">Requested GPU Size Distribution</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Frequency of jobs requesting 1, 2, 4, or 8 discrete GPUs.</p>
           </div>
-          <div className="h-60 w-full">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={gpuDistributionData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -151,31 +151,33 @@ export default function WorkloadExplorer() {
                   contentStyle={{
                     backgroundColor: '#ffffff',
                     border: '1px solid #e2e8f0',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     fontSize: '12px',
                   }}
                 />
-                <Bar dataKey="count" name="Job Count" fill="#4f46e5" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="count" name="Job Count" fill="#0f172a" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Audit Checklist & Re-ingest */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Audit Status */}
-        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
-          <h2 className="text-sm font-semibold text-slate-900 mb-1">Data Invariant Audits</h2>
-          <p className="text-xs text-slate-400 mb-3">Validation rules enforced during ingestion.</p>
+      {/* Audit Checklist & Re-ingest Panels */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Audit Status Panel */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">Data Invariant Audits</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Strict schema validation rules verified on ingestion.</p>
+          </div>
           <div className="divide-y divide-slate-100">
             {auditRules.map((r, i) => (
-              <div key={i} className="py-2.5 flex items-center justify-between text-xs">
+              <div key={i} className="py-3 flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-medium text-slate-800">{r.name}</span>
-                  <p className="text-slate-400 text-[11px]">{r.detail}</p>
+                  <span className="font-semibold text-slate-900">{r.name}</span>
+                  <p className="text-slate-500 text-[11px] mt-0.5">{r.detail}</p>
                 </div>
-                <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                   Passed
                 </span>
               </div>
@@ -183,30 +185,32 @@ export default function WorkloadExplorer() {
           </div>
         </div>
 
-        {/* Trace Ingest Tool */}
-        <div className="bg-white rounded-lg border border-slate-200/80 p-5 shadow-card">
-          <h2 className="text-sm font-semibold text-slate-900 mb-1">Ingest Trace File</h2>
-          <p className="text-xs text-slate-400 mb-4">Validate and convert raw trace CSV to canonical Parquet format.</p>
+        {/* Trace Ingest Tool Panel */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">Ingest Trace File</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Validate and convert raw trace CSV to canonical Parquet format.</p>
+          </div>
           <form onSubmit={handleImport} className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">File Path</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">File Path</label>
               <input
                 type="text"
                 value={importPath}
                 onChange={(e) => setImportPath(e.target.value)}
-                className="w-full text-xs bg-white border border-slate-200 rounded-md px-2.5 py-2 font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-2.5 font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white"
               />
             </div>
             <button
               type="submit"
               disabled={importMutation.isPending}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
             >
               {importMutation.isPending ? 'Validating...' : 'Ingest & Validate'}
             </button>
           </form>
           {importMutation.isSuccess && (
-            <p className="mt-3 text-xs text-emerald-600 font-medium">
+            <p className="text-xs text-emerald-700 font-medium bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg">
               ✓ Successfully processed and validated {importMutation.data.data.valid_rows} jobs!
             </p>
           )}
