@@ -22,17 +22,17 @@ export default function MetricCard({
   badgeColor = 'slate',
 }: MetricCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs hover:shadow-sm transition-shadow">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{title}</span>
+    <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-xs hover:shadow-sm transition-shadow">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 truncate">{title}</span>
         {badge && (
-          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${badgeStyles[badgeColor]}`}>
+          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border flex-shrink-0 ${badgeStyles[badgeColor]}`}>
             {badge}
           </span>
         )}
       </div>
-      <div className="text-2xl font-bold text-slate-900 tracking-tight">{value}</div>
-      {subtitle && <p className="mt-1 text-xs text-slate-500">{subtitle}</p>}
+      <div className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{value}</div>
+      {subtitle && <p className="mt-1 text-xs text-slate-500 truncate">{subtitle}</p>}
     </div>
   );
 }

@@ -1,0 +1,22 @@
+{
+  "dataset": "data/processed/sample_alibaba_canonical.parquet",
+  "cluster_config": {
+    "num_machines": 10,
+    "gpus_per_machine": 8,
+    "cpu_per_machine": 64,
+    "memory_per_machine": 256
+  },
+  "candidate_k": 10,
+  "forecast_enabled": false,
+  "forecast_model": null,
+  "seed": 42,
+  "total_timesteps": 2000,
+  "hyperparameters": {
+    "learning_rate": 0.0003,
+    "n_steps": 2048,
+    "batch_size": 64,
+    "n_epochs": 10,
+    "gamma": 0.99
+  },
+  "checkpoint_path": "artifacts/rl/checkpoints/ppo_noforecast_seed42.zip"
+}

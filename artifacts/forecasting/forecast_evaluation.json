@@ -1,0 +1,63 @@
+{
+  "horizon_minutes": 30,
+  "interval_minutes": 5,
+  "dataset": "data/processed/sample_alibaba_canonical.parquet",
+  "split_sizes": {
+    "train": 494,
+    "val": 165,
+    "test": 165
+  },
+  "xgboost": {
+    "model_name": "XGBoost",
+    "mae": 5.1889,
+    "rmse": 6.226,
+    "wape": 0.5925,
+    "test_samples": 165,
+    "mean_actual": 8.7576,
+    "mean_predicted": 7.9944
+  },
+  "naive": {
+    "model_name": "Naive",
+    "mae": 10.8182,
+    "rmse": 15.8231,
+    "wape": 1.2353,
+    "test_samples": 165,
+    "mean_actual": 8.7576,
+    "mean_predicted": 8.5818
+  },
+  "training_config": {
+    "hyperparameters": {
+      "n_estimators": 200,
+      "max_depth": 5,
+      "learning_rate": 0.05,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "random_state": 42,
+      "objective": "reg:squarederror"
+    },
+    "feature_columns": [
+      "lag_gpu_1",
+      "lag_jobs_1",
+      "lag_gpu_2",
+      "lag_jobs_2",
+      "lag_gpu_3",
+      "lag_jobs_3",
+      "lag_gpu_6",
+      "lag_jobs_6",
+      "lag_gpu_12",
+      "lag_jobs_12",
+      "lag_gpu_24",
+      "lag_jobs_24",
+      "rolling_mean_gpu_6",
+      "rolling_std_gpu_6",
+      "rolling_mean_gpu_12",
+      "hour_sin",
+      "hour_cos",
+      "day_sin",
+      "day_cos"
+    ],
+    "best_iteration": 4,
+    "train_samples": 494,
+    "val_samples": 165
+  }
+}

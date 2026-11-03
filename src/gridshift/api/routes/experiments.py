@@ -79,6 +79,15 @@ def _execute_simulation_task(
         }
         asyncio.run(storage.save_experiment(exp_id, exp_record))
 
+        # Save job outcomes and timeline events
+        from dataclasses import asdict
+        jobs_dicts = [
+            asdict(j) if hasattr(j, "__dataclass_fields__") else j
+            for j in getattr(exp_result, "completed_jobs", [])
+        ]
+        asyncio.run(storage.save_job_outcomes(exp_id, jobs_dicts))
+        asyncio.run(storage.save_timeline(exp_id, getattr(exp_result, "timeline_events", [])))
+
     except Exception as e:
         now_iso = datetime.now(timezone.utc).isoformat()
         exp_record = {
@@ -169,7 +178,7 @@ async def get_experiment_jobs(
     storage: StorageManager = Depends(get_storage),
 ) -> PaginatedJobsResponse:
     """Retrieve paginated job outcomes for a completed run."""
-    jobs = storage.get_job_outcomes(exp_id)
+    jobs = await storage.get_job_outcomes(exp_id)
     total = len(jobs)
     start_idx = (page - 1) * limit
     end_idx = start_idx + limit
@@ -189,6 +198,6 @@ async def get_experiment_timeline(
     storage: StorageManager = Depends(get_storage),
 ) -> list[TimelineEventModel]:
     """Retrieve raw event timeline for simulation visualization."""
-    events = storage.get_timeline(exp_id)
+    events = await storage.get_timeline(exp_id)
     return [TimelineEventModel(**e) for e in events]
 

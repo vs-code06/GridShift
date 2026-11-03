@@ -30,6 +30,11 @@ export default function Experiments() {
   const [gpusPerMachine, setGpusPerMachine] = useState(8);
   const [forecastEnabled, setForecastEnabled] = useState(true);
 
+  const applyPreset = (machines: number, gpus: number) => {
+    setNumMachines(machines);
+    setGpusPerMachine(gpus);
+  };
+
   const handleLaunch = (e: React.FormEvent) => {
     e.preventDefault();
     const datasetId = datasets && datasets.length > 0 ? datasets[0].id : 'sample_alibaba_canonical';
@@ -48,17 +53,17 @@ export default function Experiments() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Policy Benchmark & Experiments</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Policy Benchmark & Experiments</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
           Direct comparative evaluation of FCFS, Backfilling, and learned PPO across identical test workloads.
         </p>
       </div>
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <MetricCard
           title="Best Mean Wait"
           value="52.8s"
@@ -86,16 +91,16 @@ export default function Experiments() {
       </div>
 
       {/* Benchmark Charts Panels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Wait Time Comparison */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div className="pb-3 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">Average & P95 Wait Time (s)</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Average & P95 Wait Time (s)</h2>
             <p className="text-xs text-slate-500 mt-0.5">Lower is better. Demonstrates queue delays across policies.</p>
           </div>
-          <div className="h-64 w-full pt-2">
+          <div className="h-60 sm:h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonMetrics} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <BarChart data={comparisonMetrics} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="policy" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -116,14 +121,14 @@ export default function Experiments() {
         </div>
 
         {/* GPU Utilization & Throughput */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div className="pb-3 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">GPU Utilization & Throughput</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">GPU Utilization & Throughput</h2>
             <p className="text-xs text-slate-500 mt-0.5">Higher is better. Percentage of cluster GPUs actively busy.</p>
           </div>
-          <div className="h-64 w-full pt-2">
+          <div className="h-60 sm:h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonMetrics} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <BarChart data={comparisonMetrics} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="policy" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -146,17 +151,17 @@ export default function Experiments() {
 
       {/* Comparison Table Panel */}
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Policy Benchmark Results</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Policy Benchmark Results</h2>
             <p className="text-xs text-slate-500 mt-0.5">Statistical metrics across identical 500-job trace seeds.</p>
           </div>
-          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 self-start sm:self-auto">
             Matched 500-Job Trace
           </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[500px]">
             <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4">Policy</th>
@@ -201,14 +206,34 @@ export default function Experiments() {
       </div>
 
       {/* Launch Experiment Form Panel */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-5">
-        <div>
-          <h2 className="text-base font-semibold text-slate-900">Run Simulation Experiment</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Execute a discrete-event trace simulation with custom cluster configuration.</p>
+      <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4 sm:space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
+          <div>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Run Simulation Experiment</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Execute a discrete-event trace simulation with custom cluster configuration.</p>
+          </div>
+          {/* Quick cluster presets */}
+          <div className="flex items-center gap-1.5 self-start sm:self-auto text-xs">
+            <span className="text-slate-400 text-[11px] font-medium mr-1">Presets:</span>
+            <button
+              type="button"
+              onClick={() => applyPreset(10, 8)}
+              className="px-2 py-0.5 rounded border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px]"
+            >
+              10-Node
+            </button>
+            <button
+              type="button"
+              onClick={() => applyPreset(5, 8)}
+              className="px-2 py-0.5 rounded border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px]"
+            >
+              5-Node
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleLaunch} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5">Policy</label>
               <select
@@ -257,7 +282,7 @@ export default function Experiments() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -271,7 +296,7 @@ export default function Experiments() {
             <button
               type="submit"
               disabled={createExpMutation.isPending}
-              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
+              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50 self-start sm:self-auto"
             >
               {createExpMutation.isPending ? 'Simulating...' : 'Run Simulation'}
             </button>
@@ -288,12 +313,12 @@ export default function Experiments() {
       {/* Historical Experiments Log Panel */}
       {experiments && experiments.length > 0 && (
         <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">Historical Experiment Runs</h2>
+          <div className="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Historical Experiment Runs</h2>
             <span className="text-xs font-mono text-slate-500">{experiments.length} runs</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[500px]">
               <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-4">ID</th>

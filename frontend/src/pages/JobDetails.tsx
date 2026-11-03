@@ -39,6 +39,7 @@ export default function JobDetails() {
   const [filterGpu, setFilterGpu] = useState('all');
   const [selectedJob, setSelectedJob] = useState<MockJobRecord | null>(mockJobsData[0]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const pageSize = 10;
 
   const handleSearchChange = (val: string) => {
@@ -49,6 +50,12 @@ export default function JobDetails() {
   const handleGpuChange = (val: string) => {
     setFilterGpu(val);
     setCurrentPage(1);
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard?.writeText(text);
+    setCopiedId(text);
+    setTimeout(() => setCopiedId(null), 1800);
   };
 
   const filtered = mockJobsData.filter((j) => {
@@ -65,26 +72,35 @@ export default function JobDetails() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Job Execution Details</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Job Execution Details</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
           Detailed inspection of per-job scheduling outcomes, node placements, and lifecycle runtimes.
         </p>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="w-full sm:max-w-xs">
+      <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="relative w-full sm:max-w-xs">
           <input
             type="text"
-            placeholder="Search by Job ID or node..."
+            placeholder="Search Job ID or node..."
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+            className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg pl-3 pr-8 py-2 text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
           />
+          {search && (
+            <button
+              onClick={() => handleSearchChange('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+              title="Clear search"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs font-medium text-slate-500">GPU Request:</span>
+        <div className="flex items-center justify-between sm:justify-start gap-2">
+          <span className="text-xs font-medium text-slate-500 whitespace-nowrap">GPU Request:</span>
           <select
             value={filterGpu}
             onChange={(e) => handleGpuChange(e.target.value)}
@@ -104,7 +120,7 @@ export default function JobDetails() {
         {/* Table Column with Pagination */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden flex flex-col justify-between">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[500px]">
               <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-4">Job ID</th>
@@ -127,7 +143,21 @@ export default function JobDetails() {
                           isSelected ? 'bg-slate-100 font-semibold' : 'hover:bg-slate-50'
                         }`}
                       >
-                        <td className="py-3 px-4 font-sans text-slate-900 font-medium">{j.jobId}</td>
+                        <td className="py-3 px-4 font-sans text-slate-900 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <span>{j.jobId}</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopy(j.jobId);
+                              }}
+                              className="text-slate-400 hover:text-slate-700 opacity-60 hover:opacity-100"
+                              title="Copy Job ID"
+                            >
+                              {copiedId === j.jobId ? '✓' : '⧉'}
+                            </button>
+                          </div>
+                        </td>
                         <td className="py-3 px-4 text-slate-700">{j.waitTime}s</td>
                         <td className="py-3 px-4 text-slate-500">{j.duration}s</td>
                         <td className="py-3 px-4 text-slate-700 font-sans">{j.machine}</td>
@@ -144,8 +174,8 @@ export default function JobDetails() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-400 font-sans text-xs">
-                      No jobs matching criteria
+                    <td colSpan={6} className="py-12 text-center text-slate-400 font-sans text-xs">
+                      No jobs matching criteria "{search}"
                     </td>
                   </tr>
                 )}
@@ -154,20 +184,20 @@ export default function JobDetails() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+          <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
             <div>
               Showing <span className="font-semibold text-slate-900">{filtered.length > 0 ? startIndex + 1 : 0}</span> to{' '}
               <span className="font-semibold text-slate-900">{Math.min(startIndex + pageSize, filtered.length)}</span> of{' '}
               <span className="font-semibold text-slate-900">{filtered.length}</span> jobs
             </div>
 
-            <div className="flex items-center gap-1.5 font-medium">
+            <div className="flex items-center gap-1 font-medium">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition-colors"
+                className="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition-colors text-xs"
               >
-                Previous
+                Prev
               </button>
 
               <div className="flex items-center gap-1 px-1">
@@ -189,7 +219,7 @@ export default function JobDetails() {
               <button
                 onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition-colors"
+                className="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white text-slate-700 transition-colors text-xs"
               >
                 Next
               </button>
@@ -202,9 +232,15 @@ export default function JobDetails() {
           {selectedJob ? (
             <div className="space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div>
+                <div className="flex items-center gap-2">
                   <h3 className="font-bold text-slate-900 text-sm">{selectedJob.jobId}</h3>
-                  <span className="text-xs text-slate-400">Canonical Record Detail</span>
+                  <button
+                    onClick={() => handleCopy(selectedJob.jobId)}
+                    className="text-xs text-slate-400 hover:text-slate-700"
+                    title="Copy Job ID"
+                  >
+                    {copiedId === selectedJob.jobId ? '✓ Copied' : '⧉ Copy'}
+                  </button>
                 </div>
                 <StatusBadge status={selectedJob.status} />
               </div>

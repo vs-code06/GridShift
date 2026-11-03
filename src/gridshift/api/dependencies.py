@@ -61,7 +61,7 @@ class StorageManager:
         try:
             self._mongo_client = AsyncIOMotorClient(
                 self.settings.MONGODB_URI,
-                serverSelectionTimeoutMS=1000,
+                serverSelectionTimeoutMS=5000,
             )
             # Ping
             await self._mongo_client.admin.command("ping")
@@ -99,7 +99,8 @@ class StorageManager:
                 async for doc in cursor:
                     doc.pop("_id", None)
                     results.append(doc)
-                return results
+                if results:
+                    return results
             except Exception:
                 pass
         return list(self._memory_datasets.values())
@@ -132,21 +133,54 @@ class StorageManager:
                 async for doc in cursor:
                     doc.pop("_id", None)
                     results.append(doc)
-                return results
+                if results:
+                    return results
             except Exception:
                 pass
         return list(self._memory_experiments.values())
 
-    def save_job_outcomes(self, exp_id: str, jobs: list[dict[str, Any]]) -> None:
+    async def save_job_outcomes(self, exp_id: str, jobs: list[dict[str, Any]]) -> None:
         self._memory_jobs[exp_id] = jobs
+        if self._db is not None:
+            try:
+                await self._db.job_outcomes.replace_one(
+                    {"exp_id": exp_id},
+                    {"exp_id": exp_id, "jobs": jobs},
+                    upsert=True,
+                )
+            except Exception as e:
+                logger.warning("Failed to save job outcomes to MongoDB: %s", e)
 
-    def get_job_outcomes(self, exp_id: str) -> list[dict[str, Any]]:
+    async def get_job_outcomes(self, exp_id: str) -> list[dict[str, Any]]:
+        if self._db is not None:
+            try:
+                doc = await self._db.job_outcomes.find_one({"exp_id": exp_id})
+                if doc and "jobs" in doc:
+                    return doc["jobs"]
+            except Exception:
+                pass
         return self._memory_jobs.get(exp_id, [])
 
-    def save_timeline(self, exp_id: str, events: list[dict[str, Any]]) -> None:
+    async def save_timeline(self, exp_id: str, events: list[dict[str, Any]]) -> None:
         self._memory_timelines[exp_id] = events
+        if self._db is not None:
+            try:
+                await self._db.timelines.replace_one(
+                    {"exp_id": exp_id},
+                    {"exp_id": exp_id, "events": events},
+                    upsert=True,
+                )
+            except Exception as e:
+                logger.warning("Failed to save timeline to MongoDB: %s", e)
 
-    def get_timeline(self, exp_id: str) -> list[dict[str, Any]]:
+    async def get_timeline(self, exp_id: str) -> list[dict[str, Any]]:
+        if self._db is not None:
+            try:
+                doc = await self._db.timelines.find_one({"exp_id": exp_id})
+                if doc and "events" in doc:
+                    return doc["events"]
+            except Exception:
+                pass
         return self._memory_timelines.get(exp_id, [])
 
 

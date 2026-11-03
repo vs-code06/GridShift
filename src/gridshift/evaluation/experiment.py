@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import copy
 import logging
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +31,8 @@ class ExperimentResult:
     total_jobs_count: int
     cluster_config: dict[str, Any]
     timeline_events_count: int
+    completed_jobs: list[Any] = field(default_factory=list)
+    timeline_events: list[dict[str, Any]] = field(default_factory=list)
 
 
 def run_policy_experiment(
@@ -106,5 +108,7 @@ def run_policy_experiment(
         total_jobs_count=len(jobs),
         cluster_config=cluster_config,
         timeline_events_count=len(result.timeline_events),
+        completed_jobs=result.completed_jobs,
+        timeline_events=result.timeline_events,
     )
 

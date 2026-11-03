@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from gridshift.config import get_settings
 from gridshift.data.schemas import CanonicalJob
-from gridshift.evaluation.comparator import compare_policies
+from gridshift.evaluation.comparator import compare_policies, compare_policies_multi_seed
 from gridshift.evaluation.export import export_experiment_results
 
 console = Console()
@@ -32,6 +32,7 @@ console = Console()
 @click.option("--cpu", type=float, default=None, help="CPU cores per machine.")
 @click.option("--memory", type=float, default=None, help="Memory (GB) per machine.")
 @click.option("--seed", type=int, default=42, help="Evaluation seed.")
+@click.option("--seeds", type=str, default=None, help="Comma-separated seeds for multi-seed comparison (e.g. 42,100,2024).")
 @click.option("--output", type=click.Path(), default=None, help="Output JSON path.")
 def main(
     dataset_path: str,
@@ -41,6 +42,7 @@ def main(
     cpu: float | None,
     memory: float | None,
     seed: int,
+    seeds: str | None,
     output: str | None,
 ) -> None:
     """Run fair policy comparisons on test dataset."""
@@ -51,11 +53,13 @@ def main(
     n_cpu = cpu or settings.DEFAULT_CPU_PER_MACHINE
     n_memory = memory or settings.DEFAULT_MEMORY_PER_MACHINE
 
+    seed_list = [int(s.strip()) for s in seeds.split(",")] if seeds else [seed]
+
     console.print(f"\n[bold blue]GridShift Fair Policy Comparison[/bold blue]")
     console.print(f"  Dataset: {dataset_path}")
     console.print(f"  Cluster: {n_machines} machines × {n_gpus} GPUs / {n_cpu} CPU / {n_memory} GB")
     console.print(f"  PPO Checkpoint: {ppo_checkpoint or 'None (baselines only)'}")
-    console.print(f"  Seed: {seed}\n")
+    console.print(f"  Seeds: {seed_list}\n")
 
     df = pd.read_parquet(dataset_path)
     jobs = [CanonicalJob(**r) for r in df.to_dict("records")]
@@ -68,36 +72,64 @@ def main(
         "memory_per_machine": n_memory,
     }
 
-    comparison = compare_policies(
-        test_jobs=jobs,
-        cluster_config=cluster_config,
-        ppo_checkpoint=ppo_checkpoint,
-        seed=seed,
-    )
-
-    table = Table(title="Fair Policy Comparison Results")
-    table.add_column("Policy", style="cyan")
-    table.add_column("Avg Wait (s)", justify="right")
-    table.add_column("P95 Wait (s)", justify="right")
-    table.add_column("GPU Util", justify="right")
-    table.add_column("Throughput (jobs/hr)", justify="right")
-    table.add_column("Fragmentation", justify="right")
-    table.add_column("Violations", justify="right")
-    table.add_column("Completed", justify="right")
-
-    for row in comparison["results"]:
-        table.add_row(
-            row["policy"].upper(),
-            f"{row['avg_wait_sec']:.2f}",
-            f"{row['p95_wait_sec']:.2f}",
-            f"{row['gpu_utilization']:.2%}",
-            f"{row['throughput_jobs_hr']:.2f}",
-            str(row["fragmentation_events"]),
-            str(row["constraint_violations"]),
-            f"{row['completed_jobs']}/{row['total_jobs']}",
+    if len(seed_list) > 1:
+        comparison = compare_policies_multi_seed(
+            test_jobs=jobs,
+            cluster_config=cluster_config,
+            ppo_checkpoint=ppo_checkpoint,
+            seeds=seed_list,
         )
 
-    console.print(table)
+        table = Table(title=f"Multi-Seed Fair Policy Comparison (Seeds: {seed_list})")
+        table.add_column("Policy", style="cyan")
+        table.add_column("Avg Wait (s) [mean ± std]", justify="right")
+        table.add_column("P95 Wait (s) [mean ± std]", justify="right")
+        table.add_column("GPU Util [mean ± std]", justify="right")
+        table.add_column("Throughput (jobs/hr) [mean ± std]", justify="right")
+        table.add_column("Completed", justify="right")
+        table.add_column("Violations", justify="right")
+
+        for row in comparison["summary"]:
+            table.add_row(
+                row["policy"].upper(),
+                f"{row['avg_wait']['mean']:.2f} ± {row['avg_wait']['std']:.2f}",
+                f"{row['p95_wait']['mean']:.2f} ± {row['p95_wait']['std']:.2f}",
+                f"{row['gpu_utilization']['mean']:.2%} ± {row['gpu_utilization']['std']:.2%}",
+                f"{row['throughput']['mean']:.2f} ± {row['throughput']['std']:.2f}",
+                f"{row['completed_jobs']}/{row['total_jobs']}",
+                str(row["constraint_violations"]),
+            )
+        console.print(table)
+    else:
+        comparison = compare_policies(
+            test_jobs=jobs,
+            cluster_config=cluster_config,
+            ppo_checkpoint=ppo_checkpoint,
+            seed=seed_list[0],
+        )
+
+        table = Table(title="Fair Policy Comparison Results")
+        table.add_column("Policy", style="cyan")
+        table.add_column("Avg Wait (s)", justify="right")
+        table.add_column("P95 Wait (s)", justify="right")
+        table.add_column("GPU Util", justify="right")
+        table.add_column("Throughput (jobs/hr)", justify="right")
+        table.add_column("Fragmentation", justify="right")
+        table.add_column("Violations", justify="right")
+        table.add_column("Completed", justify="right")
+
+        for row in comparison["results"]:
+            table.add_row(
+                row["policy"].upper(),
+                f"{row['avg_wait_sec']:.2f}",
+                f"{row['p95_wait_sec']:.2f}",
+                f"{row['gpu_utilization']:.2%}",
+                f"{row['throughput_jobs_hr']:.2f}",
+                str(row["fragmentation_events"]),
+                str(row["constraint_violations"]),
+                f"{row['completed_jobs']}/{row['total_jobs']}",
+            )
+        console.print(table)
 
     out_file = output or "artifacts/experiments/results/comparison_summary.json"
     export_experiment_results(comparison, out_file)

@@ -38,17 +38,17 @@ const featureImportanceData = [
 
 export default function Forecast() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Demand Forecasting</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Demand Forecasting</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
           XGBoost regression forecasting aggregate cluster GPU requests for the next 30-minute window without lookahead leakage.
         </p>
       </div>
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <MetricCard
           title="XGBoost MAE"
           value="5.19"
@@ -74,20 +74,20 @@ export default function Forecast() {
       </div>
 
       {/* Main Prediction Chart Panel */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Predicted vs. Actual Demand</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Predicted vs. Actual Demand</h2>
             <p className="text-xs text-slate-500 mt-0.5">Evaluation on held-out test split comparing XGBoost against actual requests and naive baseline.</p>
           </div>
-          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded">
+          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded self-start sm:self-auto">
             Target: sum(gpus, t+30m)
           </span>
         </div>
 
-        <div className="h-72 w-full pt-2">
+        <div className="h-64 sm:h-72 w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={forecastTimeSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+            <LineChart data={forecastTimeSeries} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="step" stroke="#94a3b8" fontSize={11} tickLine={false} />
               <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -132,11 +132,11 @@ export default function Forecast() {
       </div>
 
       {/* Feature Importance & Invariants Panels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Feature Importance */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Feature Importance (%)</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Feature Importance (%)</h2>
             <p className="text-xs text-slate-500 mt-0.5">Relative gain contributions to prediction accuracy.</p>
           </div>
           <div className="h-56 w-full">
@@ -144,7 +144,7 @@ export default function Forecast() {
               <BarChart layout="vertical" data={featureImportanceData} margin={{ top: 0, right: 16, left: 16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                 <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} domain={[0, 45]} />
-                <YAxis dataKey="feature" type="category" stroke="#64748b" fontSize={11} tickLine={false} width={130} />
+                <YAxis dataKey="feature" type="category" stroke="#64748b" fontSize={10} tickLine={false} width={120} />
                 <Tooltip
                   formatter={(val: number) => [`${val}%`, 'Importance']}
                   contentStyle={{
@@ -161,12 +161,12 @@ export default function Forecast() {
         </div>
 
         {/* Validation & Leakage Guarantees */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Temporal Isolation Guarantees</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Temporal Isolation Guarantees</h2>
             <p className="text-xs text-slate-500 mt-0.5">Strict architectural constraints enforced across the pipeline.</p>
           </div>
-          <div className="space-y-3.5 text-xs text-slate-600 pt-1">
+          <div className="space-y-3 text-xs text-slate-600 pt-1">
             {[
               'All features are computed strictly from information available at or before timestamp t.',
               'Observed job runtimes and future arrivals are strictly excluded from input observations.',

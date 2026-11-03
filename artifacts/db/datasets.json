@@ -1,0 +1,13 @@
+{
+  "sample_alibaba_canonical": {
+    "id": "sample_alibaba_canonical",
+    "source_file": "data/raw/sample_alibaba_trace.csv",
+    "parquet_path": "data/processed/sample_alibaba_canonical.parquet",
+    "date_range_start": "1311.9625329398837",
+    "date_range_end": "257376.47515412266",
+    "total_rows": 500,
+    "valid_rows": 500,
+    "excluded_rows": 0,
+    "created_at": "2026-11-03T03:44:04.941716+00:00"
+  }
+}

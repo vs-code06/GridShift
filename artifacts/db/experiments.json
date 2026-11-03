@@ -1,0 +1,83 @@
+{
+  "exp_fcfs_seed42": {
+    "id": "exp_fcfs_seed42",
+    "policy": "fcfs",
+    "dataset_id": "sample_alibaba_canonical",
+    "status": "completed",
+    "seed": 42,
+    "cluster_config": {
+      "num_machines": 10,
+      "gpus_per_machine": 8,
+      "cpu_per_machine": 64.0,
+      "memory_per_machine": 256.0
+    },
+    "metrics": {
+      "avg_wait": 0.0,
+      "p95_wait": 0.0,
+      "gpu_utilization": 0.11583191589229024,
+      "throughput": 6.938033232182833,
+      "fragmentation_events": 0,
+      "constraint_violations": 0,
+      "total_jobs": 500,
+      "completed_jobs": 500,
+      "simulation_duration": 259439.51834224453
+    },
+    "error_message": null,
+    "created_at": "2026-11-03T03:44:04.941716+00:00",
+    "completed_at": "2026-11-03T03:44:04.941716+00:00"
+  },
+  "exp_backfill_seed42": {
+    "id": "exp_backfill_seed42",
+    "policy": "backfill",
+    "dataset_id": "sample_alibaba_canonical",
+    "status": "completed",
+    "seed": 42,
+    "cluster_config": {
+      "num_machines": 10,
+      "gpus_per_machine": 8,
+      "cpu_per_machine": 64.0,
+      "memory_per_machine": 256.0
+    },
+    "metrics": {
+      "avg_wait": 0.0,
+      "p95_wait": 0.0,
+      "gpu_utilization": 0.11583191589229024,
+      "throughput": 6.938033232182833,
+      "fragmentation_events": 0,
+      "constraint_violations": 0,
+      "total_jobs": 500,
+      "completed_jobs": 500,
+      "simulation_duration": 259439.51834224453
+    },
+    "error_message": null,
+    "created_at": "2026-11-03T03:44:04.941716+00:00",
+    "completed_at": "2026-11-03T03:44:04.941716+00:00"
+  },
+  "exp_ppo_seed42": {
+    "id": "exp_ppo_seed42",
+    "policy": "ppo",
+    "dataset_id": "sample_alibaba_canonical",
+    "status": "completed",
+    "seed": 42,
+    "cluster_config": {
+      "num_machines": 10,
+      "gpus_per_machine": 8,
+      "cpu_per_machine": 64.0,
+      "memory_per_machine": 256.0
+    },
+    "metrics": {
+      "avg_wait": 0.0,
+      "p95_wait": 0.0,
+      "gpu_utilization": 0.11583191589229024,
+      "throughput": 6.938033232182833,
+      "fragmentation_events": 0,
+      "constraint_violations": 0,
+      "total_jobs": 500,
+      "completed_jobs": 500,
+      "simulation_duration": 259439.51834224453
+    },
+    "error_message": null,
+    "created_at": "2026-11-03T03:44:04.941716+00:00",
+    "completed_at": "2026-11-03T03:44:04.941716+00:00"
+  }
+}

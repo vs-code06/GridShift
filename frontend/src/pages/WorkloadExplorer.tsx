@@ -52,17 +52,17 @@ export default function WorkloadExplorer() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Workload Explorer</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Workload Explorer</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
           Alibaba GPU Trace 2020 ingestion profile, resource request distributions, and data invariant audits.
         </p>
       </div>
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <MetricCard
           title="Total Trace Jobs"
           value={active ? `${active.total_rows.toLocaleString()}` : '500'}
@@ -92,16 +92,16 @@ export default function WorkloadExplorer() {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Arrival Timeline */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div className="pb-3 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">Arrival & GPU Request Intensity</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Arrival & GPU Request Intensity</h2>
             <p className="text-xs text-slate-500 mt-0.5">Arrival count and aggregate requested GPUs over 4-hour bins.</p>
           </div>
-          <div className="h-64 w-full pt-2">
+          <div className="h-60 sm:h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={arrivalTimeSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <LineChart data={arrivalTimeSeries} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -136,14 +136,14 @@ export default function WorkloadExplorer() {
         </div>
 
         {/* GPU Distribution */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div className="pb-3 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">Requested GPU Size Distribution</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Requested GPU Size Distribution</h2>
             <p className="text-xs text-slate-500 mt-0.5">Frequency of jobs requesting 1, 2, 4, or 8 discrete GPUs.</p>
           </div>
-          <div className="h-64 w-full pt-2">
+          <div className="h-60 sm:h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={gpuDistributionData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <BarChart data={gpuDistributionData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="gpus" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -163,11 +163,11 @@ export default function WorkloadExplorer() {
       </div>
 
       {/* Audit Checklist & Re-ingest Panels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Audit Status Panel */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Data Invariant Audits</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Data Invariant Audits</h2>
             <p className="text-xs text-slate-500 mt-0.5">Strict schema validation rules verified on ingestion.</p>
           </div>
           <div className="divide-y divide-slate-100">
@@ -186,9 +186,9 @@ export default function WorkloadExplorer() {
         </div>
 
         {/* Trace Ingest Tool Panel */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Ingest Trace File</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Ingest Trace File</h2>
             <p className="text-xs text-slate-500 mt-0.5">Validate and convert raw trace CSV to canonical Parquet format.</p>
           </div>
           <form onSubmit={handleImport} className="space-y-3">

@@ -39,16 +39,16 @@ export default function Simulation() {
   const utilPct = Math.round((allocatedGpus / totalGpus) * 100);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Cluster Simulation State</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Cluster Simulation State</h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real-time inspection of node capacity, waiting queue, and running allocations.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <span className="text-xs font-medium text-slate-500">Policy:</span>
           <select
             value={filterPolicy}
@@ -63,7 +63,7 @@ export default function Simulation() {
       </div>
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <MetricCard title="GPU Utilization" value={`${utilPct}%`} subtitle={`${allocatedGpus} of ${totalGpus} GPUs active`} />
         <MetricCard title="Active Jobs" value="18" subtitle="Across 10 compute nodes" />
         <MetricCard title="Waiting in Queue" value="5 Jobs" subtitle="4 immediately fittable" />
@@ -71,24 +71,24 @@ export default function Simulation() {
       </div>
 
       {/* Compute Nodes Panel */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-6 shadow-xs">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+      <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 mb-4 sm:mb-5 gap-2">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Compute Nodes</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Compute Nodes</h2>
             <p className="text-xs text-slate-500 mt-0.5">10 Machines · 8 GPUs, 64 Cores, 256 GB RAM each</p>
           </div>
-          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded">
+          <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded self-start sm:self-auto">
             Capacity: 80 GPUs
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {mockMachines.map((m) => {
             const gpuPct = Math.round((m.allocatedGpus / m.totalGpus) * 100);
             return (
               <div
                 key={m.id}
-                className="p-3.5 rounded-lg border border-slate-200/80 bg-slate-50/70 hover:bg-slate-100/60 transition-all space-y-3"
+                className="p-3.5 rounded-lg border border-slate-200/80 bg-slate-50/70 hover:bg-slate-100/60 transition-all space-y-2.5"
               >
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-mono font-bold text-slate-900">{m.id}</span>
@@ -123,9 +123,9 @@ export default function Simulation() {
 
       {/* Waiting Job Queue Panel */}
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-semibold text-slate-900">Waiting Job Queue</h2>
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900">Waiting Job Queue</h2>
             <p className="text-xs text-slate-500 mt-0.5">Top candidate jobs eligible for placement decisions.</p>
           </div>
           <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
@@ -134,7 +134,7 @@ export default function Simulation() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[550px]">
             <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4">#</th>

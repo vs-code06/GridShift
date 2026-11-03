@@ -84,6 +84,93 @@ def compare_policies(
     }
 
 
+def compare_policies_multi_seed(
+    test_jobs: list[CanonicalJob],
+    cluster_config: dict[str, Any],
+    ppo_checkpoint: str | Path | None = None,
+    seeds: list[int] | None = None,
+    candidate_k: int = 10,
+) -> dict[str, Any]:
+    """Run baseline policies and PPO across multiple seeds and compute summary statistics.
+
+    Parameters
+    ----------
+    test_jobs:
+        Identical held-out job sequence used for all policies.
+    cluster_config:
+        Fixed cluster specification.
+    ppo_checkpoint:
+        Optional path to trained PPO checkpoint.
+    seeds:
+        List of random seeds to evaluate. Defaults to [42, 100, 2024].
+    candidate_k:
+        Lookahead queue size.
+
+    Returns
+    -------
+    dict[str, Any]
+        Multi-seed evaluation containing all runs and statistical mean ± std per metric.
+    """
+    import statistics
+
+    if seeds is None:
+        seeds = [42, 100, 2024]
+
+    all_runs: list[dict[str, Any]] = []
+    by_policy: dict[str, list[dict[str, Any]]] = {}
+
+    for s in seeds:
+        res = compare_policies(
+            test_jobs=test_jobs,
+            cluster_config=cluster_config,
+            ppo_checkpoint=ppo_checkpoint,
+            seed=s,
+            candidate_k=candidate_k,
+        )
+        for row in res["results"]:
+            all_runs.append(row)
+            by_policy.setdefault(row["policy"], []).append(row)
+
+    summary: list[dict[str, Any]] = []
+    for policy, rows in by_policy.items():
+        avg_waits = [r["avg_wait_sec"] for r in rows]
+        p95_waits = [r["p95_wait_sec"] for r in rows]
+        utils = [r["gpu_utilization"] for r in rows]
+        thrs = [r["throughput_jobs_hr"] for r in rows]
+
+        summary.append({
+            "policy": policy,
+            "seeds": seeds,
+            "avg_wait": {
+                "mean": round(statistics.mean(avg_waits), 2),
+                "std": round(statistics.stdev(avg_waits) if len(avg_waits) > 1 else 0.0, 2),
+            },
+            "p95_wait": {
+                "mean": round(statistics.mean(p95_waits), 2),
+                "std": round(statistics.stdev(p95_waits) if len(p95_waits) > 1 else 0.0, 2),
+            },
+            "gpu_utilization": {
+                "mean": round(statistics.mean(utils), 4),
+                "std": round(statistics.stdev(utils) if len(utils) > 1 else 0.0, 4),
+            },
+            "throughput": {
+                "mean": round(statistics.mean(thrs), 2),
+                "std": round(statistics.stdev(thrs) if len(thrs) > 1 else 0.0, 2),
+            },
+            "completed_jobs": rows[0]["completed_jobs"],
+            "total_jobs": rows[0]["total_jobs"],
+            "constraint_violations": sum(r["constraint_violations"] for r in rows),
+        })
+
+    return {
+        "cluster_config": cluster_config,
+        "seeds": seeds,
+        "num_test_jobs": len(test_jobs),
+        "results": all_runs,
+        "summary": summary,
+    }
+
+
 def _format_result_dict(res: ExperimentResult) -> dict[str, Any]:
     m = res.metrics
     return {
