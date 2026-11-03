@@ -1,5 +1,5 @@
 {
-  "dataset": "data/processed/sample_alibaba_canonical.parquet",
+  "dataset": "data/processed/alibaba_gpu_trace_canonical.parquet",
   "cluster_config": {
     "num_machines": 10,
     "gpus_per_machine": 8,
@@ -10,7 +10,7 @@
   "forecast_enabled": false,
   "forecast_model": null,
   "seed": 42,
-  "total_timesteps": 2000,
+  "total_timesteps": 10000,
   "hyperparameters": {
     "learning_rate": 0.0003,
     "n_steps": 2048,

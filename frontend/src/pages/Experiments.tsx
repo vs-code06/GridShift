@@ -37,7 +37,7 @@ export default function Experiments() {
 
   const handleLaunch = (e: React.FormEvent) => {
     e.preventDefault();
-    const datasetId = datasets && datasets.length > 0 ? datasets[0].id : 'sample_alibaba_canonical';
+    const datasetId = datasets && datasets.length > 0 ? datasets[0].id : 'alibaba_gpu_trace';
     createExpMutation.mutate({
       dataset_id: datasetId,
       policy: selectedPolicy,

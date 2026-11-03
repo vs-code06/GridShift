@@ -57,7 +57,7 @@ class GridShiftSettings(BaseSettings):
         description="Directory for processed/canonical data.",
     )
     data_dir_artifacts: Path = Field(
-        default=Path("data/artifacts"),
+        default=Path("artifacts"),
         validation_alias=AliasChoices("ARTIFACTS_DIR", "GRIDSHIFT_DATA_DIR_ARTIFACTS", "data_dir_artifacts"),
         description="Directory for generated reports and artifacts.",
     )

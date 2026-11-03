@@ -1,0 +1,55 @@
+{
+  "dataset_id": "alibaba_gpu_trace",
+  "source_file": "data/raw/alibaba_gpu_trace.csv",
+  "schema_version": "1.0",
+  "created_at": "2026-11-03T04:57:19.901507+00:00",
+  "row_counts": {
+    "total_rows": 100000,
+    "valid_rows": 100000,
+    "excluded_rows": 0
+  },
+  "field_mappings": {},
+  "distributions": {
+    "requested_gpus": {
+      "min": 1,
+      "max": 8,
+      "mean": 1.92052,
+      "median": 1.0,
+      "stdev": 2.0959882779416046
+    },
+    "requested_cpu": {
+      "min": 1.0,
+      "max": 3000.0,
+      "mean": 28.672702,
+      "median": 6.0,
+      "stdev": 80.20714975666394
+    },
+    "requested_memory": {
+      "min": 2.0,
+      "max": 23437.5,
+      "mean": 121.843778,
+      "median": 29.3,
+      "stdev": 391.7464139419978
+    },
+    "observed_runtime": {
+      "min": 5.0,
+      "max": 604942.0,
+      "mean": 5563.86976,
+      "median": 589.0,
+      "stdev": 18390.573276957737
+    },
+    "submit_time": {
+      "min": 0.0,
+      "max": 3239954.0,
+      "mean": 1931573.94535,
+      "median": 1940615.5,
+      "stdev": 794940.0918321209
+    }
+  },
+  "summary_statistics": {
+    "total_jobs": 100000,
+    "time_span_seconds": 3239954.0,
+    "unique_users": 0,
+    "unique_queues": 0
+  }
+}

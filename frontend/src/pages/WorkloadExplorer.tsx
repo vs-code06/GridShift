@@ -41,7 +41,7 @@ const auditRules = [
 export default function WorkloadExplorer() {
   const { data: datasets } = useDatasets();
   const importMutation = useImportDataset();
-  const [importPath, setImportPath] = useState('data/raw/sample_alibaba_trace.csv');
+  const [importPath, setImportPath] = useState('data/raw/alibaba_gpu_trace.csv');
 
   const active = datasets && datasets.length > 0 ? datasets[0] : null;
 

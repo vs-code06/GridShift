@@ -13,7 +13,7 @@ collected in 2020. It includes job submission times, resource requests (GPU, CPU
 and execution metadata.
 
 ### Usage in GridShift
-- We use a **manageable subset** (2–5 days) of the full trace
+- We use a **100,000-job production slice** (~37.5 days) extracted directly from Alibaba PAI's `pai_task_table.csv`
 - The trace is replayed through our simulator — it is NOT a live feed
 - Job runtimes are replayed as-is (simplifying assumption documented in the PRD)
 

@@ -1,16 +1,16 @@
 {
-  "dataset": "data/processed/sample_alibaba_canonical.parquet",
+  "dataset": "data/processed/alibaba_gpu_trace_canonical.parquet",
   "cluster_config": {
     "num_machines": 10,
     "gpus_per_machine": 8,
     "cpu_per_machine": 64,
     "memory_per_machine": 256
   },
-  "candidate_k": 5,
+  "candidate_k": 10,
   "forecast_enabled": true,
-  "forecast_model": "data/artifacts/forecasting/models/xgboost_forecast.json",
+  "forecast_model": "artifacts/forecasting/models/xgboost_forecast.json",
   "seed": 42,
-  "total_timesteps": 1000,
+  "total_timesteps": 10000,
   "hyperparameters": {
     "learning_rate": 0.0003,
     "n_steps": 2048,
@@ -18,5 +18,5 @@
     "n_epochs": 10,
     "gamma": 0.99
   },
-  "checkpoint_path": "data/artifacts/rl/checkpoints/ppo_forecast_seed42.zip"
+  "checkpoint_path": "artifacts/rl/checkpoints/ppo_forecast_seed42.zip"
 }

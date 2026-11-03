@@ -87,8 +87,15 @@ def main(
             mapping_data = json.load(f)
         mapping = FieldMapping(**mapping_data)
     else:
-        # Use default mapping — user should customize
-        mapping = FieldMapping()
+        # Default canonical column mapping
+        mapping = FieldMapping(
+            job_id="job_id",
+            submit_time="submit_time",
+            requested_gpus="requested_gpus",
+            requested_cpu="requested_cpu" if "requested_cpu" in df.columns else None,
+            requested_memory="requested_memory" if "requested_memory" in df.columns else None,
+            observed_runtime="observed_runtime",
+        )
 
     jobs, transform_report = transform_trace(df, mapping)
 

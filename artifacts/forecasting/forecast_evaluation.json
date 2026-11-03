@@ -1,29 +1,29 @@
 {
   "horizon_minutes": 30,
   "interval_minutes": 5,
-  "dataset": "data/processed/sample_alibaba_canonical.parquet",
+  "dataset": "data/processed/alibaba_gpu_trace_canonical.parquet",
   "split_sizes": {
-    "train": 494,
-    "val": 165,
-    "test": 165
+    "train": 6462,
+    "val": 2154,
+    "test": 2154
   },
   "xgboost": {
     "model_name": "XGBoost",
-    "mae": 5.1889,
-    "rmse": 6.226,
-    "wape": 0.5925,
-    "test_samples": 165,
-    "mean_actual": 8.7576,
-    "mean_predicted": 7.9944
+    "mae": 42.4143,
+    "rmse": 72.184,
+    "wape": 0.2871,
+    "test_samples": 2154,
+    "mean_actual": 147.7474,
+    "mean_predicted": 127.5254
   },
   "naive": {
     "model_name": "Naive",
-    "mae": 10.8182,
-    "rmse": 15.8231,
-    "wape": 1.2353,
-    "test_samples": 165,
-    "mean_actual": 8.7576,
-    "mean_predicted": 8.5818
+    "mae": 76.5097,
+    "rmse": 122.4409,
+    "wape": 0.5178,
+    "test_samples": 2154,
+    "mean_actual": 147.7474,
+    "mean_predicted": 148.0056
   },
   "training_config": {
     "hyperparameters": {
@@ -56,8 +56,8 @@
       "day_sin",
       "day_cos"
     ],
-    "best_iteration": 4,
-    "train_samples": 494,
-    "val_samples": 165
+    "best_iteration": 80,
+    "train_samples": 6462,
+    "val_samples": 2154
   }
 }
