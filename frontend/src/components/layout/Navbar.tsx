@@ -8,6 +8,7 @@ const navItems = [
   { to: '/forecast', label: 'Forecast' },
   { to: '/experiments', label: 'Experiments' },
   { to: '/jobs', label: 'Job Details' },
+  { to: '/models', label: 'Model Comparison' },
 ];
 
 export default function Navbar() {
@@ -17,16 +18,12 @@ export default function Navbar() {
     <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand */}
+          {/* Brand & Desktop Navigation */}
           <div className="flex items-center gap-8">
-            <NavLink to="/" className="flex items-center gap-2.5 group">
-              <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-white text-xs font-bold shadow-xs group-hover:bg-slate-800 transition-colors">
-                G
-              </div>
-              <div>
-                <span className="font-bold text-sm tracking-tight text-slate-900 block leading-tight">GridShift</span>
-                <span className="text-[10px] text-slate-400 font-medium tracking-wide block leading-tight">GPU Cluster Scheduler</span>
-              </div>
+            <NavLink to="/" className="flex items-center">
+              <span className="font-bold text-base tracking-tight text-slate-900 hover:text-slate-700 transition-colors">
+                GridShift
+              </span>
             </NavLink>
 
             {/* Desktop Navigation Tabs */}
@@ -37,9 +34,9 @@ export default function Navbar() {
                   to={item.to}
                   end={item.to === '/'}
                   className={({ isActive }) =>
-                    `px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                    `px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                       isActive
-                        ? 'text-white bg-slate-900 shadow-xs'
+                        ? 'text-white bg-slate-900 shadow-xs font-semibold'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`
                   }
@@ -54,7 +51,7 @@ export default function Navbar() {
           <div className="flex md:hidden items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition-colors"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (

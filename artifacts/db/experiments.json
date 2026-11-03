@@ -96,5 +96,22 @@
     "error_message": "PPO policy requires 'ppo_checkpoint' path.",
     "created_at": "2026-11-03T03:58:49.858722+00:00",
     "completed_at": "2026-11-03T03:58:49.858722+00:00"
+  },
+  "exp_af1f5a36": {
+    "id": "exp_af1f5a36",
+    "policy": "ppo",
+    "dataset_id": "alibaba_gpu_trace",
+    "status": "failed",
+    "seed": 42,
+    "cluster_config": {
+      "num_machines": 10,
+      "gpus_per_machine": 8,
+      "cpu_per_machine": 64.0,
+      "memory_per_machine": 256.0
+    },
+    "metrics": null,
+    "error_message": "PPO policy requires 'ppo_checkpoint' path.",
+    "created_at": "2026-11-03T09:59:34.923848+00:00",
+    "completed_at": "2026-11-03T09:59:34.923848+00:00"
   }
 }
